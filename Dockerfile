@@ -20,14 +20,13 @@ RUN cp -r client/dist /prod/client
 #CMD [ "pnpm", "preview" ]
 
 FROM nginx:stable-alpine AS admin
-ARG BUILD_CONTEXT
 COPY --from=build /prod/admin/dist /usr/share/nginx/html
 COPY nginx-admin.conf /etc/nginx/conf.d/default.conf
 EXPOSE 8000
 CMD ["nginx", "-g", "daemon off;"]
 
-FROM base AS client
-COPY --from=build /prod/client /prod/client
-WORKDIR /prod/client
+FROM nginx:stable-alpine AS client
+COPY --from=build /prod/client/dist /usr/share/nginx/html
+COPY nginx-client.conf /etc/nginx/conf.d/default.conf
 EXPOSE 8001
-#CMD [ "pnpm", "dev" ]
+CMD ["nginx", "-g", "daemon off;"]
