@@ -1,0 +1,44 @@
+name: Push to GCR GitHub Action
+on: [push]
+jobs:
+  build-and-push-to-gcr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:      
+      - uses: actions/checkout@v3
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: projects/1070274539288/locations/global/workloadIdentityPools/my-pool/providers/github-provider
+          service_account: github-action@microservice-nodejs.iam.gserviceaccount.com
+      - name: run ls
+        run: |
+          ls -la
+          pwd
+      - name: Build docker image
+        run: |
+          gcloud auth configure-docker
+          docker build . --target admin --tag "gcr.io/microservice-nodejs/myadmin:latest"
+          docker build . --target client --tag "gcr.io/microservice-nodejs/myclient:latest"
+          
+      - name: Push docker image
+        run: |
+          docker push "gcr.io/microservice-nodejs/myadmin:latest"
+          docker push "gcr.io/microservice-nodejs/myclient:latest"
+          
+      - name: Deploy admin to Cloud Run
+        uses: 'google-github-actions/deploy-cloudrun@v1'
+        with:
+          service: 'admin'
+          image: 'gcr.io/microservice-nodejs/myadmin:latest'
+          flags: '--port=8000 --allow-unauthenticated'
+          
+      - name: Deploy client to Cloud Run
+        uses: 'google-github-actions/deploy-cloudrun@v1'
+        with:
+          service: 'client'
+          image: 'gcr.io/microservice-nodejs/myclient:latest'
+          flags: '--port=8001 --allow-unauthenticated'
