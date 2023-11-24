@@ -24,3 +24,4 @@ This project consist of 2 sub project:-
 2. Each monorepo contains node.js web application which uses shared library as its dependency.
 3. Each of the monorepo uses a function from the shared library.
 4. The web app in both monorepo contains a button that will call a function and it will popup page alert displaying "Hello, $username User! You are an $username." when button is pressed.
+5. These monorepos are built using single Dockerfile where dependencies for each monorepo are compiled together during the build process.
