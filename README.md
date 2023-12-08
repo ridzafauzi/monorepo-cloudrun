@@ -1,13 +1,13 @@
 CI/CD pipeline to build monorepos using Docker and deploy as serverless container in Google Cloud Run with keyless authentication ( utilizing OIDC token and Workload Identity Federation )
 
-This project consist of 2 sub project:-
+This project consist of 2 sub projects:-
 1. Create CI CD pipeline to utilize keyless authentication by using OIDC token and Workload Identity Federation
-2. Create CI CD pipeline to build monorepo (based on PNPM workspace) using Docker, push image to Google Container Registry and deploy as serverless container in Goog Cloud Run.
+2. Create CI CD pipeline to build monorepo (based on PNPM workspace) using Docker, push image to Google Container Registry and deploy as serverless container in Google Cloud Run.
 
 
 ![alt text](diagram.png)
 
-1. This pipeline is managed with Github Actions.
+1. This pipeline is managed by Github Actions.
 2. The web app is based on Node.JS and is built as container using docker.
 3. The image is pushed to Google Container Registry via keyless authentication.
 4. The keyless authentication is utilizing Github OIDC provider to setup trust with Google Workload Identity Federation.
